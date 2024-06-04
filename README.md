@@ -25,6 +25,4 @@ Note: During install be sure to check the Remote Agent checkbox.
 
 ## Note
 
-Development of this plugin has ended. The code is available for changes and I
-will accept PRs but as I no longer use Automate further work on this plugin will
-not continue.
+This code was originally from [https://github.com/redanthrax/AutomateBitlockerPlugin](https://github.com/redanthrax/AutomateBitlockerPlugin ) We are maintaining the code base; please feel free to submit a PR or report an issue.
