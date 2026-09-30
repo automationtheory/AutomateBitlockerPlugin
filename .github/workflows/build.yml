@@ -1,1 +1,35 @@
+name: Build Plugin
 
+on: 
+  push: 
+    branches:
+      - master
+  pull_request:
+
+  workflow_dispatch:
+    
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore NuGet Packages
+        run: nuget restore AutomateBitlockerPlugin.sln
+
+      - name: Build solution
+        run: msbuild AutomateBitlockerPlugin.sln /p:Configuration=Release
+
+      - name: Upload compiled plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutomateBitlockerPlugin
+          path: AutomateBitlockerPlugin/bin/Release/
