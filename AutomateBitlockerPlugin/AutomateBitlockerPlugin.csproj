@@ -44,15 +44,15 @@
     <Reference Include="Interfaces">
       <HintPath>..\References\Interfaces.dll</HintPath>
     </Reference>
-	  <Reference Include="Microsoft.BitLocker.Structures">
-		  <HintPath>..\build-deps\Microsoft.BitLocker.Structures.dll</HintPath>
-		  <EmbedInteropTypes>False</EmbedInteropTypes>
-	  </Reference>
-	  <Reference Include="Microsoft.GroupPolicy.Management">
-		  <HintPath>..\build-deps\Microsoft.GroupPolicy.Management.dll</HintPath>
-		  <Private>True</Private>
-		  <EmbedInteropTypes>False</EmbedInteropTypes>
-	  </Reference>
+    <Reference Include="Microsoft.BitLocker.Structures">
+      <HintPath>..\build-deps\Microsoft.BitLocker.Structures.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.GroupPolicy.Management">
+      <HintPath>..\build-deps\Microsoft.GroupPolicy.Management.dll</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.GroupPolicy.ServerAdminTools.GpmgmtLib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\References\Microsoft.GroupPolicy.ServerAdminTools.GpmgmtLib.dll</HintPath>
@@ -218,6 +218,8 @@
     <Error Condition="!Exists('..\packages\Fody.6.6.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.6.0\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\Costura.Fody.5.7.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.5.7.0\build\Costura.Fody.props'))" />
     <Error Condition="!Exists('..\packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.5.7.0\build\Costura.Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Costura.\Fody.6.9.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.\Fody.6.9.3\build\Fody.targets'))" />
   </Target>
   <Import Project="..\packages\Costura.Fody.5.7.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.5.7.0\build\Costura.Fody.targets')" />
+  <Import Project="..\packages\Costura.\Fody.6.9.3\build\Fody.targets" Condition="Exists('..\packages\Costura.\Fody.6.9.3\build\Fody.targets')" />
 </Project>
