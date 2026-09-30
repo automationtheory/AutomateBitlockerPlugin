@@ -44,16 +44,16 @@
     <Reference Include="Interfaces">
       <HintPath>..\References\Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.BitLocker.Structures">
-      <HintPath>..\..\..\..\..\Windows\SysWOW64\WindowsPowerShell\v1.0\Modules\BitLocker\Microsoft.BitLocker.Structures.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.GroupPolicy.Management, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.GroupPolicy.ServerAdminTools.GpmgmtLib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
+	  <Reference Include="Microsoft.BitLocker.Structures">
+		  <HintPath>..\build-deps\Microsoft.BitLocker.Structures.dll</HintPath>
+		  <EmbedInteropTypes>False</EmbedInteropTypes>
+	  </Reference>
+	  <Reference Include="Microsoft.GroupPolicy.Management">
+		  <HintPath>..\build-deps\Microsoft.GroupPolicy.Management.dll</HintPath>
+		  <Private>True</Private>
+		  <EmbedInteropTypes>False</EmbedInteropTypes>
+	  </Reference>
+    <Reference Include="Microsoft.GroupPolicy.ServerAdminTools.GpmgmtLib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <HintPath>..\References\Microsoft.GroupPolicy.ServerAdminTools.GpmgmtLib.dll</HintPath>
     </Reference>

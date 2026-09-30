@@ -1,3 +1,4 @@
+
 name: Build Plugin
 
 on: 
@@ -27,9 +28,32 @@ jobs:
 
       - name: Install .NET Framework 4.5.2 Developer Pack
         run: choco install netfx-4.5.2-devpack -y
+
+      - name: Install Group Policy Management
+        shell: powershell
+        run: Install-WindowsFeature -Name GPMC -IncludeManagementTools
         
+      - name: Prepare Windows build dependencies
+        shell: powershell
+        run: |
+         New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\build-deps"
+
+         $groupPolicy = Get-ChildItem "C:\Windows" -Recurse -ErrorAction SilentlyContinue `
+           -Filter "Microsoft.GroupPolicy.Management.dll" |
+           Select-Object -First 1
+
+         $bitLocker = Get-ChildItem "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\BitLocker" `
+           -Recurse -ErrorAction Stop `
+           -Filter "Microsoft.BitLocker.Structures.dll" |
+           Select-Object -First 1
+
+           Copy-Item $bitLocker.FullName "$env:GITHUB_WORKSPACE\build-deps\Microsoft.BitLocker.Structures.dll"
+            Copy-item $groupPolicy.FullName "$env:GITHUB_WORKSPACE\build-deps\Microsoft.GroupPolicy.Management.dll"
+           Get-ChildItem "$env:GITHUB_WORKSPACE\build-deps"
+         
+          
       - name: Build solution
-        run: msbuild AutomateBitlockerPlugin\AutomateBitlockerPlugin.csproj /p:Configuration=Release
+        run: msbuild AutomateBitlockerPlugin\AutomateBitlockerPlugin.csproj /p:Configuration=Release /p:ReferencePath="${{ github.workspace }}\build-deps"
 
       - name: Upload compiled plugin
         uses: actions/upload-artifact@v4
