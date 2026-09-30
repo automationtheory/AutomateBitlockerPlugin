@@ -37,7 +37,7 @@ jobs:
          -Filter "Microsoft.GroupPolicy.Management.dll" |
          Select-Object -First 1
 
-         $bitLocker = Get-ChildItem "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\BitLocker"
+         $bitLocker = Get-ChildItem "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\BitLocker" `
            -Recurse -ErrorAction Stop `
            -Filter "Microsoft.BitLocker.Structures.dll" |
            Select-Object -First 1
