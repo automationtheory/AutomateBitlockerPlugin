@@ -27,7 +27,21 @@ jobs:
 
       - name: Install .NET Framework 4.5.2 Developer Pack
         run: choco install netfx-4.5.2-devpack -y
-        
+
+      - name: Locate required Windows assemblies
+        shell: powershell
+        run: |
+          Write-Host "=== Group Policy ==="
+          Get-ChildItem "C:\" -Recurse -ErrorAction SilentlyContinue `
+          -Filter "Microsoft.GroupPolicy.Management.dll" | 
+          Select-Object -ExpandProperty FullName
+
+          Write-Host "=== Bitlocker ==="
+          Get-ChildItem "C:\Windows\System32\WindowsPowerShell\v1.0\Modules" `
+          -Recurse -ErrorAction SilentlyContinue `
+          -Filter "Microsoft.BitLocker.Structures.dll" | 
+          Select-Object -ExpandProperty FullName
+          
       - name: Build solution
         run: msbuild AutomateBitlockerPlugin\AutomateBitlockerPlugin.csproj /p:Configuration=Release
 
