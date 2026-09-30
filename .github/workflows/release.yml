@@ -1,1 +1,111 @@
+name: Release Plugin
 
+on:
+  # Lets us test the entire release process manually
+  # WITHOUT creating an actual GitHub Release.
+  workflow_dispatch:
+
+  # A real release only happens when a version tag is pushed,
+  # for example: v1.0.6
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore AutomateBitlockerPlugin.sln
+
+      - name: Install .NET Framework 4.5.2 Developer Pack
+        run: choco install netfx-4.5.2-devpack -y
+
+      - name: Install Group Policy Management
+        shell: powershell
+        run: Install-WindowsFeature -Name GPMC -IncludeManagementTools
+
+      - name: Prepare Windows build dependencies
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\build-deps"
+
+          $groupPolicy = Get-ChildItem "C:\Windows" -Recurse -ErrorAction SilentlyContinue `
+            -Filter "Microsoft.GroupPolicy.Management.dll" |
+            Select-Object -First 1
+
+          $bitLocker = Get-ChildItem "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\BitLocker" `
+            -Recurse -ErrorAction Stop `
+            -Filter "Microsoft.BitLocker.Structures.dll" |
+            Select-Object -First 1
+
+          Copy-Item $groupPolicy.FullName "$env:GITHUB_WORKSPACE\build-deps\Microsoft.GroupPolicy.Management.dll"
+          Copy-Item $bitLocker.FullName "$env:GITHUB_WORKSPACE\build-deps\Microsoft.BitLocker.Structures.dll"
+
+          Get-ChildItem "$env:GITHUB_WORKSPACE\build-deps"
+
+      # Build ONLY the actual plugin project.
+      # Do not build the whole solution because GPOTesting and the
+      # other projects caused unrelated dependency failures.
+      - name: Build plugin
+        run: msbuild AutomateBitlockerPlugin\AutomateBitlockerPlugin.csproj /p:Configuration=Release
+
+      # Pick a package name.
+      # Manual test:
+      #   AutomateBitlockerPlugin-test-123.zip
+      #
+      # Real tag:
+      #   AutomateBitlockerPlugin-v1.0.6.zip
+      - name: Set package name
+        shell: powershell
+        run: |
+          if ("${{ github.ref }}" -like "refs/tags/v*") {
+            $packageName = "AutomateBitlockerPlugin-${{ github.ref_name }}.zip"
+          }
+          else {
+            $packageName = "AutomateBitlockerPlugin-test-${{ github.run_number }}.zip"
+          }
+
+          "PACKAGE_NAME=$packageName" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Package release
+        shell: powershell
+        run: |
+          Compress-Archive `
+            -Path "AutomateBitlockerPlugin\bin\Release\*" `
+            -DestinationPath "${{ env.PACKAGE_NAME }}"
+
+      # This lets us download and inspect the ZIP from the Actions run.
+      # It happens for BOTH test runs and real releases.
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PACKAGE_NAME }}
+          path: ${{ env.PACKAGE_NAME }}
+
+      # THIS is the safety switch.
+      # It is skipped when you click "Run workflow" manually.
+      # It only executes if the workflow was triggered by a v* tag.
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" `
+            "${{ env.PACKAGE_NAME }}" `
+            --title "${{ github.ref_name }}" `
+            --generate-notes
