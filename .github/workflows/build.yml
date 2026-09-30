@@ -29,7 +29,7 @@ jobs:
         run: choco install netfx-4.5.2-devpack -y
         
       - name: Build solution
-        run: msbuild AutomateBitlockerPlugin.sln /p:Configuration=Release
+        run: msbuild AutomateBitlockerPlugin\AutomateBitlockerPlugin.csproj /p:Configuration=Release
 
       - name: Upload compiled plugin
         uses: actions/upload-artifact@v4
