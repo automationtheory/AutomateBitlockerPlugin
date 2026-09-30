@@ -35,6 +35,7 @@ jobs:
 
          $groupPolicy = Get-ChildItem "C:\Windows\WinSxS" -Recurse -ErrorAction Stop `
          -Filter "Microsoft.GroupPolicy.Management.dll" |
+         Where-Object { $_.FullName -like "*10.0.26100.1*" } |
          Select-Object -First 1
 
          $bitLocker = Get-ChildItem "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\BitLocker" `
