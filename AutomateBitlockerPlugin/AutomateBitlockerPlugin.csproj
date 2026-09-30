@@ -48,7 +48,8 @@
 		  <HintPath>..\build-deps\Microsoft.BitLocker.Structures.dll</HintPath>
 		  <EmbedInteropTypes>False</EmbedInteropTypes>
 	  </Reference>
-	  <Reference Include="Microsoft.GroupPolicy.Management, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+	  <Reference Include="Microsoft.GroupPolicy.Management">
+		<SpecificVersion>False</SpecificVersion>
 		  <HintPath>..\build-deps\Microsoft.GroupPolicy.Management.dll</HintPath>
 		  <Private>True</Private>
 		  <EmbedInteropTypes>False</EmbedInteropTypes>
